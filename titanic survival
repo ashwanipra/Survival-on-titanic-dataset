@@ -1,0 +1,141 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+dataset=pd.read_excel("titanic3.xls")
+dataset["pclass"].isnull().value_counts()
+dataset["survived"].isnull().value_counts()
+
+plt.bar(dataset["pclass"],(dataset["survived"]==1))
+plt.show()
+
+survivor=dataset.groupby('pclass')['survived'].agg(sum)
+total_paasagner=len(dataset)
+
+plt.bar(survivor.index.values.tolist(),survivor )
+plt.legend("amount of people survived")
+plt.xlabel("class")
+plt.ylabel("people survived")
+plt.show()
+
+percentage=survivor/total_paasagner
+plt.bar(survivor.index.values.tolist(),percentage)
+plt.legend("amount of people survived")
+plt.xlabel("class")
+plt.ylabel("percent of people survived")
+plt.show()
+
+#it can be interfered that there was no
+# patiality while saving passangers because percentage of person safe in 1st class and
+#3rd class are quite similar as both have percentage of 15 and 14 percent tobe saved from overall
+#it can also be interferd that the amount of persons alive are too less from from overall
+#population
+
+
+
+gender_safe=dataset.groupby("sex")["survived"].agg(sum)
+overall_safe=dataset["survived"].agg(sum)
+percentage_safe_gen_wise=gender_safe/overall_safe
+
+plt.bar(gender_safe.index.values.tolist(),gender_safe)
+plt.xlabel("gender")
+plt.ylabel("no.of people alive")
+plt.show()
+
+plt.bar(gender_safe.index.values.tolist(),percentage_safe_gen_wise)
+plt.ylabel("percent gender wise alive")
+plt.show()
+
+#it can be interfered that there was partiality while saving , Females were preferd over male
+#while carrying out rescue opertaion as the percent of female saved is way greater than 
+#percentage of male saved that is 65 percent and 30 percent
+
+
+
+total_male_passenger=dataset[dataset["sex"]=="male"].groupby("pclass")["survived"].count()
+total_female_passenger=dataset[dataset["sex"]=="female"].groupby("pclass")["survived"].count()
+
+total_male_alive=dataset[dataset["sex"]=="male"].groupby("pclass")["survived"].agg(sum)
+total_female_alive=dataset[dataset["sex"]=="female"].groupby("pclass")["survived"].agg(sum)
+a=total_female_passenger.index.values.tolist()
+
+a[0]=a[0]+.25
+a[2]=a[2]+.25
+a[1]=a[1]+.25
+  
+fig=plt.figure()
+ax=fig.add_subplot(111)
+bar_width = 0.35
+  
+rec=ax.bar(total_male_passenger.index.values.tolist(),total_male_alive,bar_width)
+rec1=ax.bar(a ,total_female_alive,bar_width )
+plt.show()
+#no of females alive are more than the no of male alive 
+
+
+percent_of_female_alive=total_female_alive/total_female_passenger
+percent_of_male_alive=total_male_alive/total_male_passenger
+b=total_female_alive.index.values.tolist()
+for i in range(3):
+    b[i]=b[i]-.25
+bar_width=.25
+plt.bar(b,percent_of_female_alive,bar_width)
+plt.bar(a,percent_of_male_alive,bar_width)
+
+plt.ylabel("percent alive")
+plt.show()
+
+#percentage of rich female and male survived are more of first class and 
+#are likewise set.
+ #sibsp
+ 
+male_safe_with_family=dataset[dataset["sibsp"]>0].groupby("pclass")["survived"].agg(sum)
+male_safe_with_family_total=dataset[dataset["sibsp"]>0].groupby("pclass")["survived"].count()
+percet=male_safe_with_family/male_safe_with_family_total
+plt.bar(male_safe_with_family.index.values.tolist(),percet)
+plt.show()
+#much more perceent of full rich families were saved than of poorer
+
+
+print(dataset["age"].isnull().value_counts())
+dataset=dataset.fillna(dataset.mean())
+print(dataset["age"].isnull().value_counts())
+
+
+count_of_age=dataset[dataset["age"]<30]
+plt.pie(total_paasagner,labels=total_male_passenger.index.values.tolist(),autopct='%1.1f%%', shadow=True, startangle=90)
+plt.show()
+
+
+x=[1,2,3,4,5]
+y=[4,5,6,7,8]
+plt.plot(x,y,linewidth=2,color="r",label="chutiya")
+plt.legend()
+plt.show()
+
+
+x=np.arange(0,30,.1)
+p=plt.subplot(211)
+p.plot(x,np.cos(x)/x)
+q=plt.subplot(212)
+q.plot(x,np.sin(x)/x)
+plt.show()
+
+x=np.random.normal(100,10,200)
+y=np.random.normal(200,10,100)
+z=np.random.normal(150,10,100)
+s=[x,y,z]
+bp=plt.boxplot(s)
+for whisker in bp["whiskers"]:
+    whisker.set(color="r")
+    
+for medians in bp["medians"]:
+    medians.set(color="g")
+
+for box in bp["boxes"]:
+    box.set(color="y")
+    
+for caps in bp["caps"]:
+    caps.set(color="black")
+     
+plt.show()
